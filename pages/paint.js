@@ -4,7 +4,7 @@ import Canvas from '../components/Canvas';
 import Settings from '../components/Settings';
 
 const Paint = props => {
-  const [color, setColor] = useState('white');
+  const [color, setColor] = useState('black');
   const [tool, setTool] = useState('marker');
 
   return (
@@ -15,7 +15,7 @@ const Paint = props => {
       <br />
       <Canvas
         color={color}
-        width={300}
+        width={500}
         height={400}
       />
       <Settings

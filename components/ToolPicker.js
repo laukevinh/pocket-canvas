@@ -8,7 +8,8 @@ const ToolPicker = props => {
 
   const choices = [
     'marker',
-    'fill'
+    'fill',
+    'clear'
   ];
 
   return (

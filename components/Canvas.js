@@ -53,7 +53,7 @@ const Canvas = props => {
     }
 
     if (tool === 'fill') {
-      console.log("fill", color);
+      console.log(tool, color);
       const getColorIndicesForCoord = (x, y, width) => {
         var red = y * (width * 4) + x * 4;
         return [red, red + 1, red + 2, red + 3];
@@ -70,10 +70,10 @@ const Canvas = props => {
       const floodFill = (e) => {
         const x = e.offsetX;
         const y = e.offsetY;
-        const imgData = context.getImageData(0, 0, canvas.width, canvas.height).data;
-        const initColor = getHexColorForPoint(x, y, canvas.width, imgData);
-        if (!inside(x, y, initColor, color, imgData)) {
-          const currColor = getHexColorForPoint(x, y, canvas.width, imgData);
+        let imgData = context.getImageData(0, y, canvas.width, 1).data;
+        const initColor = getHexColorForPoint(x, 0, canvas.width, imgData);
+        if (!inside(x, 0, initColor, color, imgData)) {
+          const currColor = getHexColorForPoint(x, 0, canvas.width, imgData);
           console.log("not inside", x, y, initColor, currColor, color);
           return;
         }
@@ -85,31 +85,18 @@ const Canvas = props => {
         while (S.length > 0) {
           let point = S.pop();
           let lx = point.x;
-          while (inside(lx - 1, point.y, initColor, color, imgData)) {
+          imgData = context.getImageData(0, point.y, canvas.width, 1).data;
+          while (inside(lx - 1, 0, initColor, color, imgData)) {
             lx -= 1;
           }
-          while (inside(point.x, point.y, initColor, color, imgData)) {
+          while (inside(point.x, 0, initColor, color, imgData)) {
             point.x += 1;
           }
           if (lx !== point.x) {
             context.fillRect(lx, point.y, point.x - lx, 1);
           }
-          scan(lx, point.x - 1, point.y + 1, S, initColor, color, imgData);
-        }
-        S.push({ x: x, y: y });
-        while (S.length > 0) {
-          let point = S.pop();
-          let lx = point.x;
-          while (inside(lx - 1, point.y, initColor, color, imgData)) {
-            lx -= 1;
-          }
-          while (inside(point.x, point.y, initColor, color, imgData)) {
-            point.x += 1;
-          }
-          if (lx !== point.x) {
-            context.fillRect(lx, point.y, point.x - lx, 1);
-          }
-          scan(lx, point.x - 1, point.y - 1, S, initColor, color, imgData);
+          scan(lx, point.x - 1, point.y + 1, S, initColor, color, context.getImageData(0, point.y + 1, canvas.width, 1).data);
+          scan(lx, point.x - 1, point.y - 1, S, initColor, color, context.getImageData(0, point.y - 1, canvas.width, 1).data);
         }
       };
 
@@ -117,9 +104,11 @@ const Canvas = props => {
         const currColor = getHexColorForPoint(x, y, canvas.width, imgData);
         // console.log("insideFunc", x, y, initColor, newColor, currColor);
         if (x < 0 || x > canvas.width || y < 0 || y > canvas.height) {
+          // console.log("dimension issue");
           return false;
         }
         if (currColor === newColor) {
+          // console.log("currColor === newColor");
           return false;
         }
         if (currColor === initColor) {
@@ -137,7 +126,7 @@ const Canvas = props => {
       const scan = (lx, rx, y, S, initColor, newColor, imgData) => {
         let added = false;
         for (let x = lx; x < rx; x++) {
-          if (!inside(x, y, initColor, newColor, imgData)) {
+          if (!inside(x, 0, initColor, newColor, imgData)) {
             added = false;
           } else if (!added) {
             S.push({ x: x, y: y });

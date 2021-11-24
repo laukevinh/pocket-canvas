@@ -6,6 +6,7 @@ const Canvas = props => {
   const {
     color,
     tool,
+    setTool,
     width,
     height
   } = props;
@@ -15,7 +16,13 @@ const Canvas = props => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
 
-    if (tool === null || tool === 'clear') {
+    if (tool === null) {
+      context.fillStyle = 'white';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      setTool('marker');
+    }
+
+    if (tool === 'clear') {
       context.fillStyle = 'white';
       context.fillRect(0, 0, canvas.width, canvas.height);
     }

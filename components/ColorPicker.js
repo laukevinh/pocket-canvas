@@ -6,23 +6,7 @@ const ColorPicker = props => {
     setColor
   } = props;
 
-  const choices = [
-    'black',
-    'red',
-    'green',
-    'blue',
-    'white'
-  ];
-
-  // const hexCodes = [
-  //   '#000000', // black
-  //   '#FF0000', // red
-  //   '#00FF00', // green
-  //   '#0000FF', // blue
-  //   '#FFFFFF'
-  // ];
-
-  const choiceToHexColor = {
+  const mapColorToHex = {
     'black': '#000000', // black
     'red': '#FF0000', // red
     'green': '#00FF00', // green
@@ -30,23 +14,16 @@ const ColorPicker = props => {
     'white': '#FFFFFF'  // white  
   }
 
-  // const rgbaCode = {
-  //   'black': [0, 0, 0, 0], // black
-  //   'red': [255, 0, 0, 0], // red
-  //   'green': [0, 255, 0, 0], // green
-  //   'blue': [0, 0, 255, 0], // blue
-  //   'white': [0, 0, 0, 0]  // white  
-  // };
-
   return (
     <div>
       Color:{' '}
       {
-        choices.map(choice => {
+        Object.entries(mapColorToHex).map(([choice, hexColor]) => {
           return (
             <button
-              className={choiceToHexColor[choice] === color ? styles.selected : null}
-              onClick={() => setColor(choiceToHexColor[choice])}
+              key={hexColor}
+              className={hexColor === color ? styles.selected : null}
+              onClick={() => setColor(hexColor)}
             >
               {choice}
             </button>

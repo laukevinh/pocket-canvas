@@ -28,7 +28,6 @@ const Canvas = props => {
     }
 
     if (tool === 'marker') {
-      console.log(tool, color);
       context.lineJoin = 'round';
       context.lineCap = 'round';
       context.lineJoin = 'miter';
@@ -60,14 +59,9 @@ const Canvas = props => {
     }
 
     if (tool === 'fill') {
-      console.log(tool, color);
       const getColorIndicesForCoord = (x, y, width) => {
         var red = y * (width * 4) + x * 4;
         return [red, red + 1, red + 2, red + 3];
-      }
-      const getColorForPoint = (x, y, width, imgData) => {
-        const [r, g, b, a] = getColorIndicesForCoord(x, y, width);
-        return imgData.slice(r, r + 4);
       }
       const getHexColorForPoint = (x, y, width, imgData) => {
         const [r, g, b, a] = getColorIndicesForCoord(x, y, width);
@@ -80,8 +74,6 @@ const Canvas = props => {
         let imgData = context.getImageData(0, y, canvas.width, 1).data;
         const initColor = getHexColorForPoint(x, 0, canvas.width, imgData);
         if (!inside(x, 0, initColor, color, imgData)) {
-          const currColor = getHexColorForPoint(x, 0, canvas.width, imgData);
-          console.log("not inside", x, y, initColor, currColor, color);
           return;
         }
         context.beginPath();
@@ -109,25 +101,16 @@ const Canvas = props => {
 
       const inside = (x, y, initColor, newColor, imgData) => {
         const currColor = getHexColorForPoint(x, y, canvas.width, imgData);
-        // console.log("insideFunc", x, y, initColor, newColor, currColor);
         if (x < 0 || x > canvas.width || y < 0 || y > canvas.height) {
-          // console.log("dimension issue");
           return false;
         }
         if (currColor === newColor) {
-          // console.log("currColor === newColor");
           return false;
         }
         if (currColor === initColor) {
           return true;
         }
         return false;
-      }
-
-      const fillOne = (x, y, newColor) => {
-        context.fillStyle = newColor;
-        context.rect(x, y, 1, 1);
-        context.fill();
       }
 
       const scan = (lx, rx, y, S, initColor, newColor, imgData) => {

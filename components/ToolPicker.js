@@ -19,6 +19,7 @@ const ToolPicker = props => {
         choices.map(choice => {
           return (
             <button
+              key={choice}
               className={choice === tool ? styles.selected : null}
               onClick={() => setTool(choice)}
             >

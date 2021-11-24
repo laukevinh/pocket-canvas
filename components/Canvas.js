@@ -1,45 +1,68 @@
 import { useEffect, useRef } from "react";
+import styles from '../styles/Paint.module.css';
 
 const Canvas = props => {
-  const { color, tool } = props;
+  const {
+    color,
+    tool,
+    width,
+    height
+  } = props;
   const canvasRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
-    context.fillStyle = 'white';
-    context.fillRect(0, 0, canvas.width, canvas.height);
 
-    context.lineJoin = 'round';
-    context.lineCap = 'round';
-    context.lineJoin = 'miter';
-    context.strokeStyle = color || 'black';
+    if (tool === null || tool === 'clear') {
+      context.fillStyle = 'white';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+    }
 
-    const handleMouseMove = (e) => {
-      context.lineTo(e.offsetX, e.offsetY);
-      context.stroke();
-    };
+    if (tool === 'marker') {
+      context.lineJoin = 'round';
+      context.lineCap = 'round';
+      context.lineJoin = 'miter';
+      context.strokeStyle = color || 'black';
 
-    const handleMouseDown = (e) => {
-      context.beginPath();
-      context.moveTo(e.offsetX, e.offsetY);
-      canvas.addEventListener('mousemove', handleMouseMove, false);
-    };
+      const handleMouseMove = (e) => {
+        context.lineTo(e.offsetX, e.offsetY);
+        context.stroke();
+      };
 
-    const handleMouseUp = () => {
-      canvas.removeEventListener('mousemove', handleMouseMove, false);
-    };
+      const handleMouseDown = (e) => {
+        context.beginPath();
+        context.moveTo(e.offsetX, e.offsetY);
+        canvas.addEventListener('mousemove', handleMouseMove, false);
+      };
 
-    canvas.addEventListener('mousedown', handleMouseDown, false);
-    canvas.addEventListener('mouseup', handleMouseUp, false);
+      const handleMouseUp = () => {
+        canvas.removeEventListener('mousemove', handleMouseMove, false);
+      };
 
-    return () => {
-      canvas.removeEventListener('mousedown', handleMouseDown);
-      canvas.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, []);
+      canvas.addEventListener('mousedown', handleMouseDown, false);
+      canvas.addEventListener('mouseup', handleMouseUp, false);
 
-  return <canvas ref={canvasRef} {...props}></canvas>;
+      return () => {
+        canvas.removeEventListener('mousedown', handleMouseDown);
+        canvas.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+
+    if (tool === 'fill') {
+      ;
+    }
+
+  }, [color, tool]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className={styles.frame}
+      width={width || '400'}
+      height={height || '300'}
+    />
+  );
 }
 
 export default Canvas;

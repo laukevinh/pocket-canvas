@@ -4,7 +4,7 @@ import Canvas from '../components/Canvas';
 import Settings from '../components/Settings';
 
 const Paint = props => {
-  const [color, setColor] = useState('black');
+  const [color, setColor] = useState('#000000');
   const [tool, setTool] = useState(null);
 
   return (
